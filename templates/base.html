@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      {% block head %}
+      <title>{% block title %}Welcome{% endblock %}</title>
+      <link rel="stylesheet" type="text/css" href="/static/screen.css" />
+      <link rel="stylesheet" type="text/css" href="/static/style.css" />
+      {% endblock %}
+    </head>
+    <body>
+      <div id="wrapper">
+        <div id="header"></div>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+          {% block footer %}
+          &copy; Copyright 2009 by 
+          <a href="http://creativesouls.hu">Creative Souls</a>. Powered
+          by <a href="http://webpy.org">Web.py</a> and <a href="http://www.mongodb.org">MongoDB</a>.
+          {% endblock %}
+        </div>
+      </div>
+    </body>
+  </html>
