@@ -3,62 +3,64 @@ from vendor.web.contrib.template import render_jinja
 
 urls = (
     '/', 'welcome',
-    '/add', 'add',
-    '/erase', 'erase',
-    '/_p/(.+)','post',
-    '/_a/(.+)', 'author',
+    '/_add', 'add',
+    '/_erase', 'erase',
+    '/secret/(.+)','secret',
+    '/author/(.+)', 'author',
     )
 
 app = web.application(urls, globals())
 render = render_jinja('templates')
 
 from mongokit import MongoDocument
+import datetime
 
-class Post(MongoDocument):
-    db_name = 'test'
-    collection_name = 'tutorial'
+class Secret(MongoDocument):
+    db_name = 'keepmysecret'
+    collection_name = 'secrets'
     structure = {
         'title' : unicode,
         'body' : unicode,
         'author' : unicode,
         'slug' : unicode,
+        'date_created' : datetime.datetime
         }
+        
     required_fields = ['title', 'author', 'body', 'slug']
-
 
 class welcome:
     def GET(self):
-        bp = Post().all()
-        print bp
-        return render.index( messages = bp )
+        secrets = Secret().all()
+        return render.index( messages = secrets )
 
-class post:
+class secret:
     def GET(self, slug):
-        p = Post().one({ 'slug' : slug })
-        return p
+        secret = Secret().one({ 'slug' : slug })
+        return secret
     
     def create(self):
         pass
 
 class author:
     def GET(self, author):
-        a = Post().all({ 'author' : author })
-        return a
+        secrets = Secret().all({ 'author' : author })
+        return secrets
 
 class add:
     def GET(self):
-        bp = Post( {'title':u'Hello, Dolly', 'body':u'Hello darling!', 'author':u'yaanno', 'slug':u'hello-dolly'} )
-        '''
-        bp['title'] = u'My post title'
-        bp['body'] = u'My post body'
-        bp['author'] = u'yaanno'
-        '''
-        bp.save()
+        secret = Secret( {
+          'title':u'Hello, Dolly', 
+          'body':u'Hello darling!', 
+          'author':u'yaanno', 
+          'slug':u'hello-dolly',
+          'date_created':datetime.datetime.now(),
+          } )
+        secret.save()
 
 class erase:
     def GET(self):
-        posts = Post().all()
-        for post in posts:
-            post.delete()
+        secrets = Secret().all()
+        for secret in secrets:
+            secret.delete()
 
 if __name__ == '__main__': app.run()
